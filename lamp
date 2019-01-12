@@ -27,7 +27,7 @@ echo installing mariadb
 apt-get install -y mariadb-server > /dev/null 2>&1
 
 echo installing php
-apt-get install -y php php-mysql libapache2-mod-php php-curl > /dev/null 2>&1
+apt-get install -y php php-mysql libapache2-mod-php php-curl php-gd php-zip > /dev/null 2>&1
 
 echo installing unzip
 apt-get install -y unzip > /dev/null 2>&1
@@ -63,6 +63,8 @@ wget --no-check-certificate https://github.com/opencart/opencart/releases/downlo
 echo extracting opencart
 unzip opencart-3.0.3.1.zip -d /tmp > /dev/null 2>&1
 mv /tmp/upload/* /var/www/html/$domain_name/
+mv /var/www/html/$domain_name/config-dist.php /var/www/html/$domain_name/config.php
+mv /var/www/html/$domain_name/admin/config-dist.php /var/www/html/$domain_name/admin/config.php
 
 echo setting permissions
 chown -R www-data:www-data /var/www/html/$domain_name
