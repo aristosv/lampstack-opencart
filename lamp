@@ -165,6 +165,7 @@ echo we'll move the storage cache and edit the opencart configuration files to c
 echo =============================================================================================================
 read -p "press enter to continue"
 mv /var/www/html/$domain_name/system/storage/ /var/www/html/storage/
+chmod -R 755 /var/www/html/storage/
 sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE', '/var/www/html/storage/');|g" /var/www/html/$domain_name/config.php /var/www/html/$domain_name/admin/config.php
 
 echo all done!
