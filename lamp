@@ -158,4 +158,13 @@ echo running certification wizard
 certbot --apache -d $domain_name
 fi
 
-echo visit $domain_name to start the opencart installation wizard
+echo =============================================================================================================
+echo opencart requires that you move the storage cache outside the html folder
+echo visit $domain_name, go through the opencart installation wizard, then return here and press enter
+echo we'll move the storage cache and edit the opencart configuration files to correspond to the new configuration
+echo =============================================================================================================
+read -p "press enter to continue"
+mv /var/www/html/$domain_name/system/storage/ /var/www/html/storage/
+sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE', '/var/www/html/storage/');|g" /var/www/html/$domain_name/config.php /var/www/html/$domain_name/admin/config.php
+
+echo all done!
