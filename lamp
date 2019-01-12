@@ -61,8 +61,8 @@ echo downloading opencart
 wget --no-check-certificate https://github.com/opencart/opencart/releases/download/3.0.3.1/opencart-3.0.3.1.zip > /dev/null 2>&1
 
 echo extracting opencart
-unzip latest.zip -d /tmp > /dev/null 2>&1
-mv /tmp/opencart/* /var/www/html/$domain_name/
+unzip opencart-3.0.3.1.zip -d /tmp > /dev/null 2>&1
+mv /tmp/upload/* /var/www/html/$domain_name/
 
 echo setting permissions
 chown -R www-data:www-data /var/www/html/$domain_name
