@@ -1,0 +1,159 @@
+echo ==============================================================
+echo this will install apache, php, mariadb and opencart
+echo optionally it can configure letsencrypt and gmail php mail
+echo you will be asked a few questions to automate the installation
+echo ==============================================================
+read -p "press enter to continue"
+
+echo set a root password for mariadb: ; read database_root_pass
+echo enter a name for the opencart database: ; read opencart_database_name
+echo enter a username for the opencart database: ; read opencart_database_user
+echo enter a password for the opencart database: ; read opencart_database_pass
+echo what is the domain name you will be hosting on this server: ; read domain_name
+
+echo updating
+apt-get update > /dev/null 2>&1
+
+echo upgrading
+apt-get -y upgrade > /dev/null 2>&1
+
+echo dist upgrade
+apt-get -y dist-upgrade > /dev/null 2>&1
+
+echo installing apache
+apt-get install -y apache2 > /dev/null 2>&1
+
+echo installing mariadb
+apt-get install -y mariadb-server > /dev/null 2>&1
+
+echo installing php
+apt-get install -y php php-mysql libapache2-mod-php php-curl > /dev/null 2>&1
+
+echo installing unzip
+apt-get install -y unzip > /dev/null 2>&1
+
+echo securing mariadb
+echo setting mariadb root password
+mysql --user="root" --password="" --execute="SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$database_root_pass');"
+
+echo removing anonymous users
+mysql --user="root" --password="" --execute="DELETE FROM mysql.user WHERE User='';"
+
+echo disabling remote root logins
+mysql --user="root" --password="" --execute="DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+
+echo removing test database
+mysql --user="root" --password="" --execute="DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';"
+
+echo flushing privileges
+mysql --user="root" --password="" --execute="FLUSH PRIVILEGES;"
+
+echo creating database
+mysql --user="root" --password="$database_root_pass" --execute="CREATE DATABASE $opencart_database_name;"
+mysql --user="root" --password="$database_root_pass" --execute="CREATE USER '$opencart_database_user'@'localhost' IDENTIFIED BY '$opencart_database_pass';"
+mysql --user="root" --password="$database_root_pass" --execute="GRANT ALL ON $opencart_database_name.* TO '$opencart_database_user'@'localhost' IDENTIFIED BY '$opencart_database_pass' WITH GRANT OPTION;"
+mysql --user="root" --password="$database_root_pass" --execute="FLUSH PRIVILEGES;"
+
+echo creating website folder
+mkdir /var/www/html/$domain_name/
+
+echo downloading opencart
+wget --no-check-certificate https://github.com/opencart/opencart/releases/download/3.0.3.1/opencart-3.0.3.1.zip > /dev/null 2>&1
+
+echo extracting opencart
+unzip latest.zip -d /tmp > /dev/null 2>&1
+mv /tmp/opencart/* /var/www/html/$domain_name/
+
+echo setting permissions
+chown -R www-data:www-data /var/www/html/$domain_name
+chmod -R 755 /var/www/html/$domain_name
+
+echo adding virtual host
+cat > /etc/apache2/sites-available/$domain_name.conf << EOL
+<VirtualHost *:80>
+  DocumentRoot /var/www/html/$domain_name
+  ServerName $domain_name
+  
+  <Directory /var/www/html/$domain_name/>
+   Options Indexes FollowSymLinks MultiViews
+   AllowOverride All
+   Order allow,deny
+   allow from all
+  </Directory>
+  
+ ErrorLog \${APACHE_LOG_DIR}/$domain_name-error.log
+ CustomLog \${APACHE_LOG_DIR}/$domain_name-access.log combined
+</VirtualHost>
+EOL
+
+echo disabling default host
+a2dissite 000-default.conf > /dev/null 2>&1
+
+echo enabling $domain_name
+a2ensite $domain_name.conf > /dev/null 2>&1
+
+echo enabling mod-rewrite
+a2enmod rewrite > /dev/null 2>&1
+
+echo restarting apache
+systemctl restart apache2.service
+
+read -p "do you want to configure php mail to use a gmail account? (y/n) " reply
+if [ "$reply" = "y" ]
+then
+echo ----------------------------------------------------------------------------
+echo step 1: allow access to your gmail account - https://g.co/allowaccess
+echo step 2: allow less secure apps - https://myaccount.google.com/lesssecureapps
+echo ----------------------------------------------------------------------------
+read -p "go ahead and perform the 2 steps above, when you finish press enter"
+
+echo enter the email address of the gmail account you want to use: ; read gmail_email_address
+echo enter the password of the gmail account you want to use: ; read gmail_pass
+
+echo installing ssmtp
+apt-get install -y ssmtp > /dev/null 2>&1
+
+echo configuring ssmtp
+rm /etc/ssmtp/ssmtp.conf
+cat > /etc/ssmtp/ssmtp.conf << EOL
+FromLineOverride=YES
+root=srvrsmonitor
+hostname=localhost
+AuthUser=$gmail_email_address
+AuthPass=$gmail_pass
+mailhub=smtp.gmail.com:587
+UseSTARTTLS=YES
+EOL
+
+echo sending test email to $gmail_email_address
+{ echo Subject: here is the subject; echo here is the body; } | /usr/sbin/ssmtp $gmail_email_address
+
+echo configuring php
+sed -i -e "s|;sendmail_path =|sendmail_path = /usr/sbin/ssmtp -t|g" /etc/php/7.0/cli/php.ini
+
+echo restarting apache
+systemctl restart apache2  > /dev/null 2>&1
+fi
+
+read -p "do you want to create a letsencrypt certificate for $domain_name? (y/n) " reply
+if [ "$reply" = "y" ]
+then
+echo ------------------------------------------------------------------
+echo you must have port 80 and port 443 open for http and https to work
+echo ------------------------------------------------------------------
+read -p "go ahead and open these ports if they are not open, when you finish press enter"
+ 
+echo configuring repositories
+echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list
+
+echo updating sources
+apt-get update > /dev/null 2>&1
+ 
+echo installing certbot
+apt-get install -y python-certbot-apache -t stretch-backports > /dev/null 2>&1
+ 
+echo running certification wizard
+certbot --apache -d $domain_name
+fi
+
+echo visit $domain_name to start the opencart installation wizard
