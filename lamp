@@ -157,3 +157,5 @@ apt-get install -y python-certbot-apache -t stretch-backports > /dev/null 2>&1
 echo running certification wizard
 certbot --apache -d $domain_name
 fi
+
+echo visit $domain_name to start the opencart installation wizard
