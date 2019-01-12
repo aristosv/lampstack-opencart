@@ -66,9 +66,6 @@ mv /tmp/upload/* /var/www/html/$domain_name/
 mv /var/www/html/$domain_name/config-dist.php /var/www/html/$domain_name/config.php
 mv /var/www/html/$domain_name/admin/config-dist.php /var/www/html/$domain_name/admin/config.php
 
-mv /var/www/html/$domain_name/system/storage/ /var/www/html/$domain_name_storage/
-sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE', '/var/www/html/$domain_name_storage/');|g" /var/www/html/$domain_name/config.php /var/www/html/$domain_name/admin/config.php
-
 echo setting permissions
 chown -R www-data:www-data /var/www/html/$domain_name
 chmod -R 755 /var/www/html/$domain_name
