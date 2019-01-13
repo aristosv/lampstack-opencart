@@ -101,7 +101,7 @@ echo restarting apache
 systemctl restart apache2.service
 
 echo creating opencart config files
-cat > /var/www/html/home.aristos.net/config.php << EOL
+cat > /var/www/html/$domain_name/config.php << EOL
 <?php
 // HTTP
 define('HTTP_SERVER', 'http://$domain_name/');
@@ -134,7 +134,7 @@ define('DB_PORT', '3306');
 define('DB_PREFIX', 'oc_');
 EOL
 
-cat > /var/www/html/home.aristos.net/admin/config.php << EOF
+cat > /var/www/html/$domain_name/admin/config.php << EOF
 <?php
 // HTTP
 define('HTTP_SERVER', 'http://$domain_name/admin/');
