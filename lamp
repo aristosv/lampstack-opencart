@@ -100,6 +100,79 @@ a2enmod rewrite > /dev/null 2>&1
 echo restarting apache
 systemctl restart apache2.service
 
+echo creating opencart config files
+cat > /var/www/html/home.aristos.net/config.php << EOL
+<?php
+// HTTP
+define('HTTP_SERVER', 'http://$domain_name/');
+
+// HTTPS
+define('HTTPS_SERVER', 'http://$domain_name/');
+
+// DIR
+define('DIR_APPLICATION', '/var/www/html/$domain_name/catalog/');
+define('DIR_SYSTEM', '/var/www/html/$domain_name/system/');
+define('DIR_IMAGE', '/var/www/html/$domain_name/image/');
+define('DIR_STORAGE', '/var/www/html/storage/');
+define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
+define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
+define('DIR_CONFIG', DIR_SYSTEM . 'config/');
+define('DIR_CACHE', DIR_STORAGE . 'cache/');
+define('DIR_DOWNLOAD', DIR_STORAGE . 'download/');
+define('DIR_LOGS', DIR_STORAGE . 'logs/');
+define('DIR_MODIFICATION', DIR_STORAGE . 'modification/');
+define('DIR_SESSION', DIR_STORAGE . 'session/');
+define('DIR_UPLOAD', DIR_STORAGE . 'upload/');
+
+// DB
+define('DB_DRIVER', 'mysqli');
+define('DB_HOSTNAME', 'localhost');
+define('DB_USERNAME', '$opencart_database_user');
+define('DB_PASSWORD', '$opencart_database_pass');
+define('DB_DATABASE', '$opencart_database_name');
+define('DB_PORT', '3306');
+define('DB_PREFIX', 'oc_');
+EOL
+
+cat > /var/www/html/home.aristos.net/admin/config.php << EOF
+<?php
+// HTTP
+define('HTTP_SERVER', 'http://$domain_name/admin/');
+define('HTTP_CATALOG', 'http://$domain_name/');
+
+// HTTPS
+define('HTTPS_SERVER', 'http://$domain_name/admin/');
+define('HTTPS_CATALOG', 'http://$domain_name/');
+
+// DIR
+define('DIR_APPLICATION', '/var/www/html/$domain_name/admin/');
+define('DIR_SYSTEM', '/var/www/html/$domain_name/system/');
+define('DIR_IMAGE', '/var/www/html/$domain_name/image/');
+define('DIR_STORAGE', '/var/www/html/storage/');
+define('DIR_CATALOG', '/var/www/html/$domain_name/catalog/');
+define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
+define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
+define('DIR_CONFIG', DIR_SYSTEM . 'config/');
+define('DIR_CACHE', DIR_STORAGE . 'cache/');
+define('DIR_DOWNLOAD', DIR_STORAGE . 'download/');
+define('DIR_LOGS', DIR_STORAGE . 'logs/');
+define('DIR_MODIFICATION', DIR_STORAGE . 'modification/');
+define('DIR_SESSION', DIR_STORAGE . 'session/');
+define('DIR_UPLOAD', DIR_STORAGE . 'upload/');
+
+// DB
+define('DB_DRIVER', 'mysqli');
+define('DB_HOSTNAME', 'localhost');
+define('DB_USERNAME', '$opencart_database_user');
+define('DB_PASSWORD', '$opencart_database_pass');
+define('DB_DATABASE', '$opencart_database_name');
+define('DB_PORT', '3306');
+define('DB_PREFIX', 'oc_');
+
+// OpenCart API
+define('OPENCART_SERVER', 'https://www.opencart.com/');
+EOF
+
 read -p "do you want to configure php mail to use a gmail account? (y/n) " reply
 if [ "$reply" = "y" ]
 then
