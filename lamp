@@ -172,6 +172,6 @@ echo editing config files
 sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE', '/var/www/html/storage/');|g" /var/www/html/$domain_name/config.php /var/www/html/$domain_name/admin/config.php
 
 echo deleting install folder
-rm -rf /var/www/html/home.aristos.net/install
+rm -rf /var/www/html/$domain_name/install
 
 echo installation complete
