@@ -158,11 +158,11 @@ echo running certification wizard
 certbot --apache -d $domain_name
 fi
 
-echo ======================================================================================================================
+echo ============================================================================================
 echo opencart requires moving the storage cache outside the html folder
-echo step1: visit $domain_name, go through the web installation wizard, return here and press enter
-echo step2: the script will move the storage folder, edit the config files and delete the install folder
-echo ======================================================================================================================
+echo visit $domain_name, go through the web installation wizard, return here and press enter
+echo the script will move the storage folder, edit the config files and delete the install folder
+echo ============================================================================================
 read -p "press enter to continue"
 
 echo moving storage cache folder
@@ -174,4 +174,4 @@ sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE
 echo deleting install folder
 rm -rf /var/www/html/home.aristos.net/install
 
-echo all done
+echo installation complete
