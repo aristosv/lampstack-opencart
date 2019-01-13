@@ -128,7 +128,7 @@ UseSTARTTLS=YES
 EOL
 
 echo sending test email to $gmail_email_address
-{ echo Subject: here is the subject; echo here is the body; } | /usr/sbin/ssmtp $gmail_email_address
+{ echo Subject: opencart installation; echo this is a test email from your opencart installation; } | /usr/sbin/ssmtp $gmail_email_address
 
 echo configuring php
 sed -i -e "s|;sendmail_path =|sendmail_path = /usr/sbin/ssmtp -t|g" /etc/php/7.0/cli/php.ini
