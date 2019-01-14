@@ -10,5 +10,3 @@ You will be asked to enter some information and the script will install Apache, 
 You will also be given 2 more options:
 - use a gmail account for php mail functionality
 - secure your website with a Let's Encrypt certificate
-
-As soon as the script is done you can visit your domain URL and start the OpenCart wizard.
