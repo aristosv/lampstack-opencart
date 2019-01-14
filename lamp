@@ -100,7 +100,7 @@ a2enmod rewrite > /dev/null 2>&1
 echo restarting apache
 systemctl restart apache2.service
 
-read -p "do you want to configure php mail to use a gmail account? (y/n) " reply
+read -p "do you want to configure php mail() to use a gmail account? (y/n) " reply
 if [ "$reply" = "y" ]
 then
 echo ----------------------------------------------------------------------------
@@ -174,4 +174,4 @@ sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE
 echo deleting install directory
 rm -rf /var/www/html/$domain_name/install
 
-echo installation complete
+echo installation complete, visit $domain_name
