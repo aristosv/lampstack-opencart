@@ -1,5 +1,5 @@
 # lampstack-opencart
-Apache / PHP / MySQL / OpenCart - installation script
+Apache - PHP - MySQL - OpenCart
 ```
 bash <(wget --no-check-certificate -qO- https://raw.githubusercontent.com/aristosv/lampstack-opencart/master/lamp)
 ```
