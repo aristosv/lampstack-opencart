@@ -63,6 +63,8 @@ wget --no-check-certificate https://github.com/opencart/opencart/releases/downlo
 echo extracting opencart
 unzip 3.0.2.0-OpenCart.zip -d /tmp > /dev/null 2>&1
 mv /tmp/upload/* /var/www/html/$domain_name/
+
+echo creating configuration files
 mv /var/www/html/$domain_name/config-dist.php /var/www/html/$domain_name/config.php
 mv /var/www/html/$domain_name/admin/config-dist.php /var/www/html/$domain_name/admin/config.php
 
