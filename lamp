@@ -140,9 +140,9 @@ fi
 read -p "do you want to create a letsencrypt certificate for $domain_name? (y/n) " reply
 if [ "$reply" = "y" ]
 then
-echo ------------------------------------------------------------------
-echo you must have port 80 and port 443 open for http and https to work
-echo ------------------------------------------------------------------
+echo -----------------------------------------------------------------------------------
+echo you must have port 80 and port 443 open on your firewall for http and https to work
+echo -----------------------------------------------------------------------------------
 read -p "go ahead and open these ports if they are not open, when you finish press enter"
  
 echo configuring repositories
