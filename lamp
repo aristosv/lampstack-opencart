@@ -160,11 +160,12 @@ echo running certification wizard
 certbot --apache -d $domain_name
 fi
 
-echo ==================================================================================================
+echo ===============================================================================================================
 echo opencart requires moving the storage directory outside the html directory
 echo visit $domain_name, go through the web installation wizard, return here and press enter
 echo the script will move the storage directory, edit the config files and delete the install directory
-echo ==================================================================================================
+echo use username [$opencart_database_user] and password [$opencart_database_pass] during the database configuration
+echo ===============================================================================================================
 read -p "press enter to continue"
 
 echo moving storage directory
