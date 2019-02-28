@@ -177,4 +177,5 @@ sed -i -e "s|define('DIR_STORAGE', DIR_SYSTEM . 'storage/');|define('DIR_STORAGE
 echo deleting install directory
 rm -rf /var/www/html/$domain_name/install
 
-echo installation complete, visit $domain_name
+echo installation complete
+echo visit $domain_name
