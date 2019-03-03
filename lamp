@@ -1,6 +1,6 @@
 echo ==============================================================
 echo this will install apache, php, mariadb and opencart
-echo optionally it can configure letsencrypt and php mail
+echo optionally it can configure letsencrypt and php mail()
 echo you will be asked a few questions to automate the installation
 echo ==============================================================
 read -p "press enter to continue"
