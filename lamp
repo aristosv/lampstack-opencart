@@ -102,20 +102,28 @@ a2enmod rewrite > /dev/null 2>&1
 echo restarting apache
 systemctl restart apache2.service
 
-read -p "do you want to configure php mail() to use a gmail account? (y/n) " reply
+read -p "do you want to configure php mail() to use a gmail or an office365 account? (y/n) " reply
 if [ "$reply" = "y" ]
 then
+
+echo installing ssmtp
+apt-get install -y ssmtp > /dev/null 2>&1
+
+PS3='select an option and press enter: '
+options=(gmail office365 quit)
+select opt in "${options[@]}"
+do
+ case $opt in
+  gmail)
+
 echo ----------------------------------------------------------------------------
 echo step 1: allow access to your gmail account - https://g.co/allowaccess
 echo step 2: allow less secure apps - https://myaccount.google.com/lesssecureapps
 echo ----------------------------------------------------------------------------
 read -p "go ahead and perform the 2 steps above, when you finish press enter"
 
-echo enter the email address of the gmail account you want to use: ; read gmail_email_address
-echo enter the password of the gmail account you want to use: ; read gmail_pass
-
-echo installing ssmtp
-apt-get install -y ssmtp > /dev/null 2>&1
+echo enter the email address of the gmail account you want to use: ; read email_user
+echo enter the password of the gmail account you want to use: ; read email_pass
 
 echo configuring ssmtp
 rm /etc/ssmtp/ssmtp.conf
@@ -123,14 +131,46 @@ cat > /etc/ssmtp/ssmtp.conf << EOL
 FromLineOverride=YES
 root=srvrsmonitor
 hostname=localhost
-AuthUser=$gmail_email_address
-AuthPass=$gmail_pass
+AuthUser=$email_user
+AuthPass=$email_pass
 mailhub=smtp.gmail.com:587
 UseSTARTTLS=YES
 EOL
 
-echo sending test email to $gmail_email_address
-{ echo Subject: opencart installation; echo this is a test email from your opencart installation; } | /usr/sbin/ssmtp $gmail_email_address
+echo sending test email to $email_user
+{ echo Subject: email configuration on $HOSTNAME is successful; } | /usr/sbin/ssmtp $email_user
+
+  break
+;;
+  office365)
+
+echo enter the email address of the office365 account you want to use: ; read email_user
+echo enter the password of the office365 account you want to use: ; read email_pass
+
+echo configuring ssmtp
+rm /etc/ssmtp/ssmtp.conf
+cat > /etc/ssmtp/ssmtp.conf << EOL
+FromLineOverride=YES
+root=$email_user
+AuthUser=$email_user
+AuthPass=$email_pass
+mailhub=smtp.office365.com:587
+UseSTARTTLS=YES
+EOL
+
+echo "root:$email_user" >> /etc/ssmtp/revaliases
+
+echo sending test email to $email_user
+{ echo Subject: email configuration on $HOSTNAME is successful; } | /usr/sbin/ssmtp $email_user
+
+  break
+;;
+  quit)
+  exit
+;;
+  *) echo invalid option;;
+ esac
+done
 
 echo configuring php
 sed -i -e "s|;sendmail_path =|sendmail_path = /usr/sbin/ssmtp -t|g" /etc/php/7.0/cli/php.ini
