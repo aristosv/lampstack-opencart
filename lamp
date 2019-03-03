@@ -1,6 +1,6 @@
 echo ==============================================================
 echo this will install apache, php, mariadb and opencart
-echo optionally it can configure letsencrypt and php mail()
+echo optionally it can configure letsencrypt and php mail
 echo you will be asked a few questions to automate the installation
 echo ==============================================================
 read -p "press enter to continue"
@@ -102,7 +102,7 @@ a2enmod rewrite > /dev/null 2>&1
 echo restarting apache
 systemctl restart apache2.service
 
-read -p "do you want to configure php mail() to use a gmail or an office365 account? (y/n) " reply
+read -p "do you want to configure php mail to use a gmail or an office365 account? (y/n) " reply
 if [ "$reply" = "y" ]
 then
 
