@@ -8,5 +8,5 @@ bash <(wget --no-check-certificate -qO- https://raw.githubusercontent.com/aristo
 You will be asked to enter some information and the script will install Apache, PHP, MariaDB and OpenCart.
 
 You will also be given 2 more options:
-- use an email account for php mail functionality
+- use an email account for php mail() functionality
 - secure your website with a Let's Encrypt certificate
